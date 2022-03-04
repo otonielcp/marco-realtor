@@ -25,7 +25,9 @@ const Banner = ({
         {desc1} <br /> {desc2}
       </Text>
       <Button>
-        <Link href={linkName}>{buttomText}</Link>
+        <Link href={linkName}>
+          <a>{buttonText}</a>
+        </Link>
       </Button>
     </Box>
   </Flex>
