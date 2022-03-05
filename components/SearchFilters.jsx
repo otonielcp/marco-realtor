@@ -1,16 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Flex, Select, Box, Text, Input, Spinner, Icon, Button } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import { MdCancel } from 'react-icons/md';
-import Image from 'next/image';
+import { useEffect, useState } from "react";
+import {
+  Flex,
+  Select,
+  Box,
+  Text,
+  Input,
+  Spinner,
+  Icon,
+  Button,
+} from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { MdCancel } from "react-icons/md";
+import Image from "next/image";
 
-import { filterData, getFilterValues } from '../utils/filterData';
-import { baseUrl, fetchApi } from '../utils/fetchApi';
-import noresult from '../assets/images/noresult.svg';
+import { filterData, getFilterValues } from "../utils/filterData";
+import { baseUrl, fetchApi } from "../utils/fetchApi";
+import noresult from "../assets/images/noresult.svg";
 
 export default function SearchFilters() {
   const [filters] = useState(filterData);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [locationData, setLocationData] = useState();
   const [showLocations, setShowLocations] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,22 +29,24 @@ export default function SearchFilters() {
     const path = router.pathname;
     const { query } = router;
 
-    const values = getFilterValues(filterValues)
+    const values = getFilterValues(filterValues);
 
     values.forEach((item) => {
-      if(item.value && filterValues?.[item.name]) {
-        query[item.name] = item.value
+      if (item.value && filterValues?.[item.name]) {
+        query[item.name] = item.value;
       }
-    })
+    });
 
     router.push({ pathname: path, query: query });
   };
 
   useEffect(() => {
-    if (searchTerm !== '') {
+    if (searchTerm !== "") {
       const fetchData = async () => {
         setLoading(true);
-        const data = await fetchApi(`${baseUrl}/auto-complete?query=${searchTerm}`);
+        const data = await fetchApi(
+          `${baseUrl}/auto-complete?query=${searchTerm}`
+        );
         setLoading(false);
         setLocationData(data?.hits);
       };
@@ -48,7 +59,14 @@ export default function SearchFilters() {
     <Flex bg='gray.100' p='4' justifyContent='center' flexWrap='wrap'>
       {filters?.map((filter) => (
         <Box key={filter.queryName}>
-          <Select onChange={(e) => searchProperties({ [filter.queryName]: e.target.value })} placeholder={filter.placeholder} w='fit-content' p='2' >
+          <Select
+            onChange={(e) =>
+              searchProperties({ [filter.queryName]: e.target.value })
+            }
+            placeholder={filter.placeholder}
+            w='fit-content'
+            p='2'
+          >
             {filter?.items?.map((item) => (
               <option value={item.value} key={item.value}>
                 {item.name}
@@ -58,7 +76,12 @@ export default function SearchFilters() {
         </Box>
       ))}
       <Flex flexDir='column'>
-        <Button onClick={() => setShowLocations(!showLocations)} border='1px' borderColor='gray.200' marginTop='2' >
+        <Button
+          onClick={() => setShowLocations(!showLocations)}
+          border='1px'
+          borderColor='gray.200'
+          marginTop='2'
+        >
           Search Location
         </Button>
         {showLocations && (
@@ -70,7 +93,7 @@ export default function SearchFilters() {
               focusBorderColor='gray.300'
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            {searchTerm !== '' && (
+            {searchTerm !== "" && (
               <Icon
                 as={MdCancel}
                 pos='absolute'
@@ -78,7 +101,7 @@ export default function SearchFilters() {
                 right='5'
                 top='5'
                 zIndex='100'
-                onClick={() => setSearchTerm('')}
+                onClick={() => setSearchTerm("")}
               />
             )}
             {loading && <Spinner margin='auto' marginTop='3' />}
@@ -88,19 +111,33 @@ export default function SearchFilters() {
                   <Box
                     key={location.id}
                     onClick={() => {
-                      searchProperties({ locationExternalIDs: location.externalID });
+                      searchProperties({
+                        locationExternalIDs: location.externalID,
+                      });
                       setShowLocations(false);
                       setSearchTerm(location.name);
                     }}
                   >
-                    <Text cursor='pointer' bg='gray.200' p='2' borderBottom='1px' borderColor='gray.100' >
+                    <Text
+                      cursor='pointer'
+                      bg='gray.200'
+                      p='2'
+                      borderBottom='1px'
+                      borderColor='gray.100'
+                    >
                       {location.name}
                     </Text>
                   </Box>
                 ))}
                 {!loading && !locationData?.length && (
-                  <Flex justifyContent='center' alignItems='center' flexDir='column' marginTop='5' marginBottom='5' >
-                    <Image src={noresult} />
+                  <Flex
+                    justifyContent='center'
+                    alignItems='center'
+                    flexDir='column'
+                    marginTop='5'
+                    marginBottom='5'
+                  >
+                    <Image src={noresult} alt='' />
                     <Text fontSize='xl' marginTop='3'>
                       Waiting to search!
                     </Text>
